@@ -17,6 +17,7 @@ class maskedDataset(torch.utils.data.Dataset):
             mask = torch.rand(self.data.shape) < self.mask_percent
             masked_data = self.data.clone()
             masked_data[mask] = -1
+            self.mask = mask    
         return masked_data
     def __getitem__(self, index):
         return (self.masked_data[index],self.data[index])
@@ -25,16 +26,19 @@ class maskedDataset(torch.utils.data.Dataset):
 
 
 
-class multiDatamaskedDataset(torch.utils.data.Dataset):
-    ''' Dataset class to handle multiple datasets '''
-    def __init__(self,adata_list,
-                 mask_percent: float = 0.3,
-                 method:str = "normal",
-                 mode:str= "interleave",
-                 ):
-        self.adata_list = adata_list
-        self.mask_percent = mask_percent
-        self.method = method
+# class multiDatamaskedDataset(torch.utils.data.Dataset):
+#     ''' Dataset class to handle multiple datasets '''
+#     def __init__(self,adata_list,
+#                  mask_percent: float = 0.3,
+#                  method:str = "normal",
+#                  mode:str= "interleave",
+#                  ):
+#         self.adata_list = adata_list
+#         self.mask_percent = mask_percent
+#         self.method = method
+    
+#     def __getitem__(self, index):
+        
         
     
     

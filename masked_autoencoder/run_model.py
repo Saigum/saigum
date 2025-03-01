@@ -128,15 +128,25 @@ def run_args(args):
     
     all_preds = np.concatenate(all_preds, axis=0)
     all_targets = np.concatenate(all_targets, axis=0)
-    rmse = np.sqrt(mean_squared_error(all_targets, all_preds))
-    mae = mean_absolute_error(all_targets, all_preds)
-    overall_corr, _ = pearsonr(all_targets.flatten(), all_preds.flatten())
+    
+    ## evaluate over masked genes only (not the whole dataset)
+    masked_preds = all_preds
+    masked_targets = all_targets
+    masked_preds = masked_preds[dataset.mask]
+    masked_targets = masked_targets[dataset.mask] 
+    
+    print(f"Sanity check, masked_preds shape: {masked_preds.shape}, true masked_targets shape: {masked_targets.shape}")
+    
+    rmse = np.sqrt(mean_squared_error(masked_preds,masked_targets ))
+    mae = mean_absolute_error(masked_targets, masked_preds)
+    overall_corr, _ = pearsonr(masked_preds.flatten(), masked_targets.flatten())
     
     print(f"RMSE: {rmse:.4f}")
     print(f"MAE: {mae:.4f}")
     print(f"Overall Pearson Correlation: {overall_corr:.4f}")
     torch.save(model.state_dict(), args.output_path)
     
+    ### Evaluating prediction when you mask the same set of genes
     #############################################################################################################
     ###############  Multiple gene expression data (multiple datasets gene reconstruction)  #####################
     #############################################################################################################
