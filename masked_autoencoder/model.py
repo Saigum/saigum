@@ -25,6 +25,21 @@ class maskedDataset(torch.utils.data.Dataset):
 
 
 
+class multiDatamaskedDataset(torch.utils.data.Dataset):
+    ''' Dataset class to handle multiple datasets '''
+    def __init__(self,adata_list,
+                 mask_percent: float = 0.3,
+                 method:str = "normal",
+                 mode:str= "interleave",
+                 ):
+        self.adata_list = adata_list
+        self.mask_percent = mask_percent
+        self.method = method
+        
+    
+    
+
+
 class Encoder(torch.nn.Module):
     def __init__(self, 
                  input_dim: int, 
@@ -97,8 +112,10 @@ class MaskedAutoencoder(torch.nn.Module):
         self.encoder = Encoder(input_dim, hidden_dim, latent_dim, dropout)
         self.decoder = Decoder(latent_dim, input_dim, hidden_dim, dropout)
     def forward(self, x):
-        x = self.encoder(x)
-        x = self.decoder(x)
-        return x
+        encoded = self.encoder(x)
+        x = self.decoder(encoded)
+        return x,encoded
     
 # class GraphAttentionMaskedAutoencoder(torch.nn.Module):
+
+
